@@ -10,7 +10,7 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
-  db:
+  mysql:
     container_name: mysql
     image: mysql:5.7
     restart: always
@@ -22,15 +22,31 @@ services:
   phpmyadmin:
     container_name: phpmyadmin
     depends_on:
-      - db
+      - mysql
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
       - 80
     environment:
-      PMA_HOST: db
+      PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: dev
       VIRTUAL_HOST: admin.kevinbpalmer.com
+
+  backup:
+    image: jswetzen/mysql-backup
+    container_name: backup
+    depends_on:
+      - mysql
+    volumes:
+        - ./mysql-backup:/backup
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASS: dev
+      CRON_TIME: '0 * * * *'
+      MAX_BACKUPS: 10
+      INIT_BACKUP: 'true'
+    restart: always
 
 volumes:
     db_data:
