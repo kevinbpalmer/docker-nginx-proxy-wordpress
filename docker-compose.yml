@@ -43,8 +43,8 @@ services:
       MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_PASS: dev
-      CRON_TIME: '0 * * * *'
-      MAX_BACKUPS: 10
+      CRON_TIME: '0 */6 * * *'
+      MAX_BACKUPS: 30
       INIT_BACKUP: 'true'
     restart: always
 
